@@ -1,4 +1,5 @@
-const port=4000;
+require("dotenv").config();
+const port=process.env.PORT || 4000;
 const express=require("express");
 const app=express();
 const cors=require("cors");
@@ -8,7 +9,7 @@ const multer=require("multer");
 const path=require("path");
 
 const mongoose=require("mongoose");
-mongoose.connect("mongodb+srv://happyharsh-07:<232107?Harsh>@cluster0.ew5vhen.mongodb.net/e-commerce");
+mongoose.connect(process.env.MONGO_URL);
 
     //Schema for creating products
     const Product=mongoose.model("Product",{
@@ -42,7 +43,30 @@ mongoose.connect("mongodb+srv://happyharsh-07:<232107?Harsh>@cluster0.ew5vhen.mo
     });
 
 
+    app.post('/addproduct',async(req,res)=>{
+        const product=new Product({
+            id:req.body.id,
+            name:req.body.name,
+            image:req.body.image,
+            category:req.body.category,
+            new_price:req.body.new_price,
+            old_price:req.body.old_price,
+        });
+
+        console.log(product);
+
+        await product.save();
+        console.log("Product Saved successfully");
+        res.json({
+            success:true,
+            name:req.body.name,
+        });
+
+    });
+
+
 //Ek basic route check karne ke liye
+
 app.get("/",(req,res)=>{
     res.send("EXPRESS App is running");;
 });
